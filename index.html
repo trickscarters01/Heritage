@@ -41,6 +41,32 @@
         .font-serif { font-family: 'Cormorant Garamond', serif; }
         .font-premium { font-family: 'Playfair Display', serif; }
 
+        /* LOADER API */
+        #globalLoader {
+            position: absolute; inset: 0; background: rgba(2, 26, 21, 0.95); backdrop-filter: blur(8px);
+            z-index: 3000; display: flex; align-items: center; justify-content: center; flex-direction: column;
+            transition: opacity 0.2s;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 3px solid rgba(207, 170, 101, 0.1);
+            border-radius: 50%; border-top-color: var(--gold);
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text { margin-top: 15px; color: var(--gold); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-family: 'Cinzel', serif; }
+
+        /* BIRTHDAY POPUP */
+        #birthdayPopup {
+            position: absolute; top: 120px; left: 50%; transform: translateX(-50%) translateY(-20px);
+            background: linear-gradient(135deg, #0b3d32 0%, #041f1a 100%);
+            border: 1px solid var(--gold); border-radius: 12px;
+            padding: 15px 20px; z-index: 2500; width: 85%; max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 12px;
+        }
+        #birthdayPopup.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
         .header-tree-container {
             position: absolute; top: 15px; right: 15px; width: 100px; height: 100px;
             pointer-events: none; z-index: 1; opacity: 0.5;
@@ -49,7 +75,7 @@
         @keyframes sway { 0% { transform: rotate(-3deg); } 100% { transform: rotate(3deg); } }
 
         #connectionLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
-        .link-line { stroke: var(--gold-bright); stroke-width: 1px; stroke-opacity: 0.6; fill: none; will-change: stroke-dashoffset; }
+        .link-line { stroke: var(--gold-bright); stroke-width: 1.5px; stroke-opacity: 0.8; fill: none; will-change: stroke-dashoffset; }
 
         #orbitContainer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -63,10 +89,11 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; cursor: pointer; z-index: 1000;
             box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            will-change: transform; pointer-events: auto !important;
+            pointer-events: auto !important;
             touch-action: manipulation;
+            transform: scale(1); opacity: 1; 
         }
-        .node:active { transform: scale(0.95) !important; transition: transform 0.1s; }
+        .node:active { transform: scale(0.95) !important; transition: transform 0.05s; }
 
         .node-center {
             width: 150px; height: 150px;
@@ -101,14 +128,12 @@
         .node-date { font-family: 'Montserrat', sans-serif; font-size: 6px; text-transform: uppercase; color: var(--gold-bright); margin-top: 3px; letter-spacing: 0.5px; font-weight: 500; pointer-events: none; opacity: 0.9; }
 
         .edit-icon {
-            position: absolute; 
-            top: 10px; right: 10px;
+            position: absolute; top: 10px; right: 10px;
             width: 24px; height: 24px; border-radius: 50%;
             background: #000; border: 1px solid var(--gold-bright);
             display: flex; align-items: center; justify-content: center;
             color: var(--gold-bright); font-size: 12px; opacity: 1;
-            pointer-events: none;
-            z-index: 2000;
+            pointer-events: none; z-index: 2000;
             box-shadow: 0 2px 8px rgba(0,0,0,0.8);
         }
         @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(207, 170, 101, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(207, 170, 101, 0); } 100% { box-shadow: 0 0 0 0 rgba(207, 170, 101, 0); } }
@@ -116,19 +141,14 @@
 
         .app-header {
             position: absolute; top: 0; left: 0; width: 100%;
-            background: linear-gradient(to bottom, #021a15 30%, rgba(5, 46, 37, 0) 100%);
+            background: linear-gradient(to bottom, var(--bg-header) 30%, rgba(5, 46, 37, 0) 100%);
             padding: 45px 24px 20px; z-index: 500;
             display: flex; flex-direction: column; gap: 12px;
-            transition: transform 0.4s ease, background 0.4s ease;
+            transition: transform 0.2s ease, background 0.2s ease;
             pointer-events: none;
         }
         
-        .app-header.solid {
-            background: #021a15;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            border-bottom: 1px solid var(--border-fine);
-        }
-        
+        .app-header.solid { background: #021a15; box-shadow: 0 4px 20px rgba(0,0,0,0.4); border-bottom: 1px solid var(--border-fine); }
         .app-header > * { pointer-events: auto; }
         .app-header.collapsed { transform: translateY(-150%); }
 
@@ -139,7 +159,7 @@
         .search-input {
             width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-fine);
             color: #eee; padding: 6px 10px 6px 28px; border-radius: 20px;
-            font-size: 12px; font-family: 'Montserrat', sans-serif; outline: none; transition: 0.3s;
+            font-size: 12px; font-family: 'Montserrat', sans-serif; outline: none; transition: 0.2s;
         }
         .search-input:focus { background: rgba(0,0,0,0.5); border-color: var(--gold); width: 160px; }
         .search-icon { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); width: 10px; opacity: 0.7; color: var(--gold); pointer-events: none; }
@@ -149,7 +169,7 @@
         .btn-gold-outline {
             border: 1px solid var(--gold); color: var(--gold); background: rgba(212, 175, 55, 0.1);
             border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-            font-size: 18px; transition: 0.3s; backdrop-filter: blur(5px); cursor: pointer;
+            font-size: 18px; transition: 0.2s; backdrop-filter: blur(5px); cursor: pointer;
         }
         .btn-gold-outline:active { background: var(--gold); color: #000; }
 
@@ -167,7 +187,7 @@
             background: rgba(0,0,0,0.6); border: 1px solid var(--gold);
             color: var(--gold); padding: 6px 14px; border-radius: 20px;
             font-size: 9px; text-transform: uppercase; letter-spacing: 1px;
-            opacity: 0; pointer-events: none; transition: 0.3s; transform: translateX(-20px);
+            opacity: 0; pointer-events: none; transition: 0.2s; transform: translateX(-20px);
             display: flex; align-items: center; gap: 4px; pointer-events: auto;
         }
         #backBtn.visible { opacity: 1; transform: translateX(0); }
@@ -176,7 +196,7 @@
             position: fixed; inset: 0; z-index: 2000;
             background-color: #02120e;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease, visibility 0.5s; padding: 20px;
+            transition: opacity 0.3s ease, visibility 0.3s; padding: 20px;
         }
         .auth-card {
             background-color: #0b2e25; width: 100%; max-width: 280px; border-radius: 24px;
@@ -226,7 +246,7 @@
 
         .overlay-pane {
             position: fixed; inset: 0; background: #021a15; z-index: 40;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(100%); transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
             overflow-y: auto; padding-top: 160px; padding-bottom: 100px;
         }
         .overlay-pane.open { transform: translateY(0); }
@@ -247,7 +267,7 @@
         }
         .nav-btn { 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #5a7a70; transition: 0.2s; gap: 3px; cursor: pointer;
+            color: #5a7a70; transition: 0.1s; gap: 3px; cursor: pointer;
         }
         .nav-btn.active { color: var(--gold); transform: translateY(-2px); }
         .nav-icon { width: 20px; height: 20px; }
@@ -272,6 +292,20 @@
 </head>
 <body>
     <div id="appWrapper">
+
+    <div id="globalLoader">
+        <div class="spinner"></div>
+        <div class="loader-text">Synchronisation...</div>
+    </div>
+
+    <div id="birthdayPopup">
+        <div class="text-2xl">🎉</div>
+        <div>
+            <div class="text-[#cfaa65] font-cinzel text-xs font-bold uppercase tracking-wider mb-1">Message du Calendrier</div>
+            <div class="text-[10px] text-gray-300 leading-tight" id="bdayMsg"></div>
+        </div>
+        <button onclick="document.getElementById('birthdayPopup').classList.remove('visible')" class="ml-auto text-gray-500 text-lg">×</button>
+    </div>
 
     <div id="authScreen">
         <div class="auth-card">
@@ -369,9 +403,9 @@
                     </select>
                 </div>
                 <div class="space-y-4 pt-2">
-                    <div><label class="modal-label">Choisir Branche...</label><select id="branchSelect" class="modal-field mb-0" onchange="resetOtherSelects('branch')"><option value="">-- Sélectionner --</option></select></div>
-                    <div><label class="modal-label">Enfant de...</label><select id="childOfSelect" class="modal-field mb-0" onchange="resetOtherSelects('child')"><option value="">-- Sélectionner --</option></select></div>
-                    <div><label class="modal-label">Conjoint.e de...</label><select id="spouseOfSelect" class="modal-field mb-0" onchange="resetOtherSelects('spouse')"><option value="">-- Sélectionner --</option></select></div>
+                    <div><label class="modal-label">Choisir Branche...</label><select id="branchSelect" class="modal-field mb-0"><option value="">-- Sélectionner --</option></select></div>
+                    <div><label class="modal-label">Enfant de...</label><select id="childOfSelect" class="modal-field mb-0"><option value="">-- Sélectionner --</option></select></div>
+                    <div><label class="modal-label">Conjoint.e de...</label><select id="spouseOfSelect" class="modal-field mb-0"><option value="">-- Sélectionner --</option></select></div>
                 </div>
                 <button onclick="saveNewMember()" class="w-full bg-[#cfaa65] text-[#031f1a] font-bold py-3.5 rounded-xl mt-6 text-[10px] uppercase tracking-[0.2em] shadow-lg">Enregistrer</button>
             </div>
@@ -453,41 +487,154 @@
     </div>
 
     <script>
-        const ROOT_ID = 'root';
-        const API_URL = "https://api.steinhq.com/v1/storages/698caea7affba40a624c375c/Feuille1";
+        // CONFIGURATION STEIN API
+        const STEIN_URL = "https://api.steinhq.com/v1/storages/698caea7affba40a624c375c/Feuille1";
+        const ROOT_ID = 'root'; // Doit correspondre à l'ID de la racine dans Google Sheets
+
+        // Base de données de secours (Pour éviter l'écran blanc si API vide)
+        const initialDatabase = {
+            'root': { id: 'root', name: "Théotime & Sidonie", date: "Patriarches", children: ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9'] },
+            'b1': { id: 'b1', name: "Ambroisine KIPUPU", date: "20 Octobre", parent: 'root', children: [] }
+        };
 
         let database = {};
         let currentNodeID = ROOT_ID;
         let historyStack = [];
         let fromCalendar = false;
 
-        async function loadDatabase() {
+        // --- GESTION CHARGEMENT API ---
+        function showLoader() { document.getElementById('globalLoader').style.display = 'flex'; }
+        function hideLoader() { document.getElementById('globalLoader').style.display = 'none'; }
+
+        // --- SYNC API STEIN (Le coeur du système) ---
+        async function syncWithCloud() {
+            showLoader();
             try {
-                const response = await fetch(API_URL);
+                const response = await fetch(STEIN_URL);
                 const data = await response.json();
                 
-                if (data && data.length > 0) {
+                if (data && Array.isArray(data) && data.length > 0) {
                     database = {};
-                    data.forEach(m => {
-                        const member = { ...m };
-                        // Conversion chaîne CSV en tableau
-                        if (member.children && typeof member.children === 'string' && member.children.trim() !== "") {
-                            member.children = member.children.split(',').map(id => id.trim());
-                        } else if (!Array.isArray(member.children)) {
-                            member.children = [];
+                    data.forEach(row => {
+                        let entry = { ...row };
+                        
+                        // NETTOYAGE DES DONNÉES (Crucial pour l'affichage)
+                        // 1. Gestion des enfants (string vs array)
+                        if (typeof entry.children === 'string') {
+                            if(entry.children.trim() === "") {
+                                entry.children = [];
+                            } else {
+                                // Tente de parser JSON, sinon split virgule si format simple
+                                try { 
+                                    // Remplace ' par " pour le JSON valide
+                                    let cleanJson = entry.children.replace(/'/g, '"');
+                                    entry.children = JSON.parse(cleanJson); 
+                                } 
+                                catch(e) { 
+                                    // Fallback: si c'est "c1, c2", on split
+                                    entry.children = entry.children.split(',').map(s => s.trim());
+                                }
+                            }
+                        } else if (!Array.isArray(entry.children)) {
+                            entry.children = [];
                         }
-                        // Conversion chaîne "true"/"false" en booléen
-                        member.isPartner = (member.isPartner === "true" || member.isPartner === true);
-                        database[member.id] = member;
+
+                        // 2. Gestion booléens
+                        if (entry.isPartner === "true") entry.isPartner = true;
+                        
+                        // Stockage
+                        database[row.id] = entry;
                     });
-                    return true;
+                } else {
+                    console.warn("API vide, utilisation backup");
+                    database = JSON.parse(JSON.stringify(initialDatabase));
                 }
             } catch (error) {
-                console.error("Erreur de synchronisation :", error);
+                console.error("Erreur API:", error);
+                const saved = localStorage.getItem('kipupu_db');
+                database = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(initialDatabase));
+            }
+            hideLoader();
+            checkBirthdays();
+        }
+
+        // --- LOGIQUE METIER ---
+
+        async function apiAddMember(newMember, parentId) {
+            showLoader();
+            try {
+                const payload = { ...newMember };
+                if (Array.isArray(payload.children)) payload.children = JSON.stringify(payload.children);
+                if (payload.isPartner) payload.isPartner = "true";
+
+                // 1. Ajout
+                await fetch(STEIN_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify([payload])
+                });
+
+                // 2. Mise à jour parent
+                if (parentId && database[parentId]) {
+                    const parent = database[parentId];
+                    const updatePayload = {};
+                    if (parent.children) updatePayload.children = JSON.stringify(parent.children);
+                    if (parent.partnerId) updatePayload.partnerId = parent.partnerId;
+
+                    await fetch(STEIN_URL, {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ condition: { id: parentId }, set: updatePayload })
+                    });
+                }
+            } catch (e) { alert("Erreur connexion API"); }
+            hideLoader();
+        }
+
+        async function apiUpdateMember(id, updates) {
+            showLoader();
+            try {
+                await fetch(STEIN_URL, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ condition: { id: id }, set: updates })
+                });
+            } catch (e) { console.error(e); }
+            hideLoader();
+        }
+
+        async function apiDeleteMember(idToDelete, parentToUpdateId) {
+            showLoader();
+            try {
+                await fetch(STEIN_URL, {
+                    method: 'DELETE', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ condition: { id: idToDelete } })
+                });
+
+                if (parentToUpdateId && database[parentToUpdateId]) {
+                    const parent = database[parentToUpdateId];
+                    const updatePayload = {};
+                    if (parent.partnerId === idToDelete) updatePayload.partnerId = "";
+                    if (parent.children) updatePayload.children = JSON.stringify(parent.children);
+
+                    await fetch(STEIN_URL, {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ condition: { id: parentToUpdateId }, set: updatePayload })
+                    });
+                }
+            } catch (e) { console.error(e); }
+            hideLoader();
+        }
+
+        // --- AUTH & INIT ---
+        
+        function checkAuth() {
+            // On s'assure que les données sont là AVANT de valider
+            if(Object.keys(database).length === 0) {
+                syncWithCloud().then(validatePass);
+            } else {
+                validatePass();
             }
         }
 
-        function checkAuth() {
+        function validatePass() {
             const input = document.getElementById('passInput');
             const error = document.getElementById('authError');
             if (input.value === '2015') {
@@ -496,7 +643,7 @@
                 enterApp();
             } else {
                 error.classList.add('visible');
-                gsap.to('.auth-card', { x: [-5, 5, -5, 5, 0], duration: 0.3 });
+                gsap.to('.auth-card', { x: [-5, 5, -5, 5, 0], duration: 0.1 });
                 setTimeout(() => { error.classList.remove('visible'); }, 2000);
             }
         }
@@ -507,39 +654,48 @@
         
         passInput.addEventListener('focus', () => authContainer.classList.add('focus'));
         passInput.addEventListener('blur', () => authContainer.classList.remove('focus'));
-        
         passInput.addEventListener('input', (e) => {
             const val = e.target.value;
             dots.forEach((d, i) => { i < val.length ? d.classList.add('filled') : d.classList.remove('filled'); });
             if(val.length === 4) checkAuth();
         });
 
-        async function enterApp() {
-            await loadDatabase();
-            const authScreen = document.getElementById('authScreen');
-            const mainApp = document.getElementById('mainApp');
-            const orbitContainer = document.getElementById('orbitContainer');
-
-            authScreen.style.opacity = '0';
+        function enterApp() {
+            document.getElementById('authScreen').style.opacity = '0';
             setTimeout(() => {
-                authScreen.style.display = 'none';
-                mainApp.style.opacity = '1';
-                orbitContainer.style.opacity = '1';
-                renderGalaxy(ROOT_ID);
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('mainApp').style.opacity = '1';
+                
+                // Si la racine 'root' n'existe pas dans la sheet, on prend le premier élément
+                if(!database[ROOT_ID]) {
+                    const firstKey = Object.keys(database)[0];
+                    if(firstKey) currentNodeID = firstKey;
+                }
+                
+                renderGalaxy(currentNodeID);
                 updateCount();
-            }, 10);
+            }, 300);
         }
+
+        // --- RENDU GRAPHIQUE ---
 
         function renderGalaxy(centerID) {
             const container = document.getElementById('orbitContainer');
             const linesGroup = document.getElementById('linesGroup');
-            const centerData = database[centerID];
-            if(!centerData) return;
             
+            // Sécurité absolue : si l'ID n'existe pas, on recharge ou on ne fait rien
+            if (!database[centerID]) {
+                console.error("ID manquant:", centerID);
+                return;
+            }
+
+            const centerData = database[centerID];
+            currentNodeID = centerID;
+
+            // Gestion Header
             const header = document.getElementById('appHeader');
             const backBtn = document.getElementById('backBtn');
-            
-            if (centerID === ROOT_ID) {
+            if (centerID === ROOT_ID || !database[centerID].parent) {
                 header.classList.remove('collapsed');
                 backBtn.classList.remove('visible');
                 historyStack = [];
@@ -548,93 +704,113 @@
                 backBtn.classList.add('visible');
             }
 
-            currentNodeID = centerID;
-            const oldNodes = document.querySelectorAll('.node');
-            if (oldNodes.length > 0) {
-                gsap.to(oldNodes, { scale: 0, opacity: 0, duration: 0.15, onComplete: drawNewScene });
-                linesGroup.innerHTML = ''; 
-            } else { drawNewScene(); }
+            // Nettoyage fluide
+            container.innerHTML = '';
+            linesGroup.innerHTML = '';
 
-            function drawNewScene() {
-                container.innerHTML = '';
-                linesGroup.innerHTML = '';
-                const centerNode = createNodeElement(centerData, true);
-                container.appendChild(centerNode);
+            // 1. Dessiner le Centre
+            const centerNode = createNodeElement(centerData, true);
+            container.appendChild(centerNode);
+            
+            // Animation Entrée Centre (très rapide)
+            gsap.fromTo(centerNode, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.1, ease: "back.out(1.2)" });
 
-                let childrenIDs = centerData.children || [];
+            // 2. Dessiner les Enfants (Orbites)
+            let childrenIDs = centerData.children || [];
+            
+            if (childrenIDs.length > 0) {
                 const count = childrenIDs.length;
                 const isMobile = window.innerWidth < 480;
                 
-                const centerNodeRadius = isMobile ? 57.5 : 75; 
-                const orbitNodeRadius = isMobile ? 37.5 : 45;  
+                // Rayons optimisés
+                const centerRadius = isMobile ? 60 : 75; 
+                const orbitRadius = isMobile ? 40 : 45;  
                 const buffer = 15; 
+                
+                // Calcul rayon orbital dynamique pour éviter chevauchement
+                const minRadial = centerRadius + orbitRadius + buffer;
+                const perimeter = count * (orbitRadius * 2 + 10);
+                const minCircumference = perimeter / (2 * Math.PI);
+                let finalRadius = Math.max(minRadial, minCircumference);
+                
+                // Ajustement visuel pour peu d'enfants sur desktop
+                if (!isMobile && count < 5) finalRadius = Math.max(finalRadius, 140);
 
-                const minRadialDistance = centerNodeRadius + orbitNodeRadius + buffer;
-                const orbitDiameter = orbitNodeRadius * 2;
-                const gapBetweenOrbits = 10;
-                const requiredCircumference = count * (orbitDiameter + gapBetweenOrbits);
-                const minCircumferenceRadius = requiredCircumference / (2 * Math.PI);
+                const angleStep = (2 * Math.PI) / count;
 
-                let finalRadius = Math.max(minRadialDistance, minCircumferenceRadius);
-                if (!isMobile && count > 0 && count < 5) { finalRadius = Math.max(finalRadius, 140); }
+                childrenIDs.forEach((childID, index) => {
+                    // Vérif existence enfant
+                    const childData = database[childID];
+                    if(!childData) return;
 
-                if (childrenIDs && count > 0) {
-                    const angleStep = (2 * Math.PI) / count;
-                    childrenIDs.forEach((childID, index) => {
-                        const childData = database[childID];
-                        if(!childData) return;
-                        const angle = index * angleStep - (Math.PI / 2);
-                        const x = Math.cos(angle) * finalRadius;
-                        const y = Math.sin(angle) * finalRadius;
+                    const angle = index * angleStep - (Math.PI / 2); // Start top
+                    const x = Math.cos(angle) * finalRadius;
+                    const y = Math.sin(angle) * finalRadius;
 
-                        if (centerID !== ROOT_ID) {
-                            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                            line.setAttribute("x1", "50%"); line.setAttribute("y1", "50%");
-                            line.setAttribute("x2", `calc(50% + ${x}px)`); line.setAttribute("y2", `calc(50% + ${y}px)`);
-                            line.setAttribute("class", "link-line");
-                            linesGroup.appendChild(line);
-                        }
-                        
-                        const node = createNodeElement(childData, false);
-                        node.style.transform = `translate(${x}px, ${y}px) scale(0)`;
-                        
-                        const arrow = document.createElement('div');
-                        arrow.className = 'node-arrow';
-                        const rotation = (angle * 180 / Math.PI) - 135; 
-                        const ax = Math.cos(angle) * (finalRadius - (orbitNodeRadius + 5));
-                        const ay = Math.sin(angle) * (finalRadius - (orbitNodeRadius + 5));
-                        arrow.style.transform = `translate(${ax}px, ${ay}px) rotate(${rotation}deg)`;
-                        if(childData.children && childData.children.length > 0) container.appendChild(arrow);
-                        container.appendChild(node);
-                        gsap.to(node, { scale: 1, duration: 0.3, ease: "back.out(1.2)", delay: index * 0.01 });
-                    });
-                }
-                gsap.fromTo(centerNode, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "elastic.out(1, 0.6)" });
+                    // Ligne de lien
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", "50%"); line.setAttribute("y1", "50%");
+                    line.setAttribute("x2", `calc(50% + ${x}px)`); line.setAttribute("y2", `calc(50% + ${y}px)`);
+                    line.setAttribute("class", "link-line");
+                    linesGroup.appendChild(line);
+                    
+                    // Noeud Enfant
+                    const node = createNodeElement(childData, false);
+                    node.style.transform = `translate(${x}px, ${y}px)`; // Position finale
+                    
+                    // Flèche directionnelle
+                    const arrow = document.createElement('div');
+                    arrow.className = 'node-arrow';
+                    const rotation = (angle * 180 / Math.PI) - 135; 
+                    const ax = Math.cos(angle) * (finalRadius - orbitRadius - 5);
+                    const ay = Math.sin(angle) * (finalRadius - orbitRadius - 5);
+                    arrow.style.transform = `translate(${ax}px, ${ay}px) rotate(${rotation}deg)`;
+                    
+                    if(childData.children && childData.children.length > 0) container.appendChild(arrow);
+                    container.appendChild(node);
+
+                    // Animation pop (très rapide)
+                    gsap.fromTo(node, 
+                        { scale: 0, opacity: 0 }, 
+                        { scale: 1, opacity: 1, duration: 0.1, delay: index * 0.01, ease: "back.out(1.5)" }
+                    );
+                });
             }
         }
 
         function createNodeElement(data, isCenter) {
             const div = document.createElement('div');
             div.className = `node ${isCenter ? 'node-center' : 'node-orbit'}`;
+            
+            // Contenu HTML
             let content = '';
             if (isCenter) {
-                content += `<div class="node-name center-name">${data.name}</div><div class="node-date">${data.date}</div>`;
+                content += `<div class="node-name center-name">${data.name}</div>`;
+                content += `<div class="node-date">${data.date}</div>`;
                 if (data.partnerId && database[data.partnerId]) {
                     const partner = database[data.partnerId];
-                    content += `<div class="w-8 h-px bg-[#cfaa65] my-1 opacity-50"></div><div class="node-name center-name">${partner.name}</div><div class="node-date">${partner.date}</div>`;
+                    content += `<div class="w-8 h-px bg-[#cfaa65] my-1 opacity-50"></div>`;
+                    content += `<div class="node-name center-name">${partner.name}</div>`;
+                    content += `<div class="node-date">${partner.date}</div>`;
                 }
             } else {
                 let name = data.name;
+                // Nettoyage nom pour les bulles orbit
                 const mainBranches = ['b1','b2','b3','b4','b5','b6','b7','b8','b9'];
-                if (mainBranches.includes(data.id)) { name = name.replace(" KIPUPU", ""); if(name.startsWith("Annette")) name = "Annette"; } 
-                content += `<div class="node-name orbit-name">${name}</div><div class="node-date">${data.date}</div>`;
+                if (mainBranches.includes(data.id)) { 
+                    name = name.replace(" KIPUPU", ""); 
+                    if(name.startsWith("Annette")) name = "Annette"; 
+                } 
+                content += `<div class="node-name orbit-name">${name}</div>`;
+                content += `<div class="node-date">${data.date}</div>`;
             }
             div.innerHTML = content;
 
+            // Interactions
             if (isCenter) {
                 if (data.id === ROOT_ID) {
                     div.onclick = (e) => { e.stopPropagation(); document.getElementById('rootModal').style.display = 'flex'; };
-                } else if (data.id.toString().startsWith('new_')) {
+                } else if (String(data.id).startsWith('new_')) {
                     div.classList.add('cursor-pointer', 'editable-node');
                     const editIcon = document.createElement('div');
                     editIcon.className = 'edit-icon'; editIcon.innerHTML = '✎';
@@ -642,12 +818,18 @@
                     div.onclick = (e) => { e.stopPropagation(); openEditModal(data.id); };
                 }
             } else {
-                const canOpen = ['b1','b2','b3','b4','b5','b6','b7','b8','b9'].includes(data.id) || (data.children && data.children.length > 0) || data.partnerId;
+                // Si enfant ou partenaire, on peut cliquer pour naviguer
+                const canOpen = (data.children && data.children.length > 0) || data.partnerId || String(data.id).startsWith('b');
                 div.onclick = (e) => {
                      e.stopPropagation();
-                     if (canOpen || data.id.toString().startsWith('new_')) {
-                         fromCalendar = false; historyStack.push(currentNodeID); renderGalaxy(data.id);
-                     } else { gsap.to(div, { scale: 1.1, yoyo: true, repeat: 1, duration: 0.15 }); }
+                     if (canOpen || String(data.id).startsWith('new_')) {
+                         fromCalendar = false; 
+                         historyStack.push(currentNodeID); 
+                         renderGalaxy(data.id);
+                     } else {
+                         // Feedback visuel si pas d'enfants
+                         gsap.to(div, { scale: 1.1, yoyo: true, repeat: 1, duration: 0.1 });
+                     }
                 };
             }
             return div;
@@ -659,7 +841,10 @@
             else if (database[currentNodeID].parent) renderGalaxy(database[currentNodeID].parent);
         }
 
+        // --- FONCTIONS UTILITAIRES ---
+
         function updateCount() { document.getElementById('totalCount').innerText = Object.keys(database).length; }
+
         function openAddModal() { document.getElementById('addModal').style.display = 'flex'; populateSelects(); }
         function closeAddModal() { document.getElementById('addModal').style.display = 'none'; }
         
@@ -675,17 +860,13 @@
             const id = document.getElementById('editId').value;
             const name = document.getElementById('editName').value;
             const date = document.getElementById('editDate').value;
-            try {
-                const response = await fetch(API_URL, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ condition: { id: id }, set: { name: name, date: date } })
-                });
-                if(response.ok) {
-                    alert('Modifications enregistrées');
-                    location.reload();
-                }
-            } catch (error) { alert("Erreur de mise à jour"); }
+            if(database[id]) {
+                database[id].name = name;
+                database[id].date = date;
+                await apiUpdateMember(id, { name: name, date: date });
+                document.getElementById('editModal').style.display = 'none';
+                renderGalaxy(currentNodeID); 
+            }
         }
 
         async function deleteMember() {
@@ -693,57 +874,74 @@
             if (!id || !database[id]) return;
             if(!confirm("Supprimer ce membre définitivement ?")) return;
 
-            try {
-                // 1. Suppression du membre
-                await fetch(API_URL, {
-                    method: "DELETE",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ condition: { id: id } })
-                });
+            const member = database[id];
+            const parentId = member.parent;
+            const partnerId = member.partnerId;
+            const isPartner = member.isPartner;
+            let parentToUpdate = null;
 
-                // 2. Nettoyage du parent
-                const parentId = database[id].parent;
-                if(parentId && database[parentId]) {
-                    const newChildren = database[parentId].children.filter(cId => cId !== id);
-                    await fetch(API_URL, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ condition: { id: parentId }, set: { children: newChildren.join(',') } })
-                    });
-                }
-                location.reload();
-            } catch (error) { alert("Erreur de suppression"); }
+            if(parentId && database[parentId]) {
+                const p = database[parentId];
+                if(p.children) p.children = p.children.filter(cId => cId !== id);
+                parentToUpdate = parentId;
+            }
+            if(isPartner && partnerId && database[partnerId]) {
+                delete database[partnerId].partnerId;
+                parentToUpdate = partnerId;
+            }
+            
+            delete database[id];
+            await apiDeleteMember(id, parentToUpdate);
+            document.getElementById('editModal').style.display = 'none';
+            
+            if (isPartner && partnerId && database[partnerId]) {
+                historyStack = historyStack.filter(h => h !== id);
+                renderGalaxy(partnerId);
+            } else if(parentId && database[parentId]) {
+                historyStack = historyStack.filter(h => h !== id); 
+                renderGalaxy(parentId);
+            } else {
+                resetToHome();
+            }
+            updateCount();
         }
 
         function openContactModal() { document.getElementById('contactModal').style.display = 'flex'; }
+        
         function sendMessage() {
             const name = document.getElementById('contactName').value;
             const lineage = document.getElementById('contactLineage').value;
             const msg = document.getElementById('contactMsg').value;
             if(!name || !msg) { alert("Veuillez remplir votre nom et le message."); return; }
-            window.location.href = `mailto:contact@famillekipupu.com?subject=Message Héritage&body=Nom: ${name}%0D%0ALignée: ${lineage}%0D%0A${msg}`;
+            window.location.href = `mailto:contact@famillekipupu.com?subject=Message de ${name}&body=${lineage} : ${msg}`;
             document.getElementById('contactModal').style.display = 'none';
         }
 
         function populateSelects() {
             const branches = ['b1','b2','b3','b4','b5','b6','b7','b8','b9'];
             const bSel = document.getElementById('branchSelect'), cSel = document.getElementById('childOfSelect'), sSel = document.getElementById('spouseOfSelect');
-            bSel.innerHTML = '<option value="">-- Sélection --</option>'; cSel.innerHTML = '<option value="">-- Sélection --</option>'; sSel.innerHTML = '<option value="">-- Sélection --</option>';
+            bSel.innerHTML = '<option value="">-- Sélectionner --</option>'; cSel.innerHTML = '<option value="">-- Sélectionner --</option>'; sSel.innerHTML = '<option value="">-- Sélectionner --</option>';
             branches.forEach(bid => {
-                if(database[bid]) bSel.add(new Option(database[bid].name, bid));
-            });
-            Object.values(database).forEach(m => {
-                if(m.id !== ROOT_ID) {
-                    cSel.add(new Option(m.name, m.id));
-                    sSel.add(new Option(m.name, m.id));
+                let b = database[bid];
+                if(b) {
+                    bSel.add(new Option(b.name, bid));
+                    if(b.children && Array.isArray(b.children)) {
+                        b.children.forEach(cid => { 
+                            let c = database[cid]; 
+                            if(c) { 
+                                cSel.add(new Option(c.name, cid)); 
+                                sSel.add(new Option(c.name, cid)); 
+                            }
+                        });
+                    }
                 }
             });
         }
         
+        // --- FONCTION DE SUPPRESSION DÉSACTIVÉE ---
+        // Cette fonction n'est plus appelée par le HTML, laissant les choix libres
         function resetOtherSelects(type) {
-            if(type==='branch') { document.getElementById('childOfSelect').value=''; document.getElementById('spouseOfSelect').value=''; }
-            if(type==='child') { document.getElementById('branchSelect').value=''; document.getElementById('spouseOfSelect').value=''; }
-            if(type==='spouse') { document.getElementById('branchSelect').value=''; document.getElementById('childOfSelect').value=''; }
+            // Désactivé pour permettre le choix libre
         }
 
         async function saveNewMember() {
@@ -753,31 +951,30 @@
             
             const newID = 'new_' + Date.now();
             const dateStr = (d && m) ? `${d} ${m}` : "---";
-            const parentID = bVal || cVal || (sVal ? database[sVal].parent : "");
+            let parentId = null;
+            let newMemberData = {};
 
-            const newMember = {
-                id: newID, name: name, date: dateStr, parent: parentID, children: ""
-            };
-            if (sVal) { newMember.isPartner = "true"; newMember.partnerId = sVal; }
+            checkSpecificBirthday(d, m, name);
 
-            try {
-                // Création du membre
-                await fetch(API_URL, {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify([newMember])
-                });
-
-                // Mise à jour du parent
-                if (!sVal && parentID) {
-                    const currentChildren = database[parentID].children || [];
-                    currentChildren.push(newID);
-                    await fetch(API_URL, {
-                        method: "PUT", headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ condition: { id: parentID }, set: { children: currentChildren.join(',') } })
-                    });
-                }
-                location.reload();
-            } catch (error) { alert("Erreur serveur"); }
+            // LOGIQUE DE PRIORITÉ : Conjoint > Enfant > Branche
+            if (sVal) {
+                // Si Conjoint est sélectionné, il gagne
+                parentId = sVal;
+                newMemberData = { id: newID, name: name, date: dateStr, isPartner: true, partnerId: sVal, parent: database[sVal].parent, children: [] };
+                database[newID] = newMemberData;
+                database[sVal].partnerId = newID;
+            } else {
+                // Sinon, c'est un enfant. Si "Enfant de" est choisi, il gagne sur "Branche"
+                parentId = cVal ? cVal : bVal;
+                newMemberData = { id: newID, name: name, date: dateStr, parent: parentId, children: [] };
+                database[newID] = newMemberData;
+                if(!database[parentId].children) database[parentId].children = [];
+                database[parentId].children.push(newID);
+            }
+            
+            await apiAddMember(newMemberData, parentId);
+            updateCount(); closeAddModal();
+            if (currentNodeID === parentId || currentNodeID === database[parentId]?.parent) renderGalaxy(currentNodeID);
         }
 
         function toggleOverlay(type) {
@@ -785,42 +982,101 @@
             const btns = document.querySelectorAll('.nav-btn'); btns.forEach(b => b.classList.remove('active'));
 
             if (type === 'calendar') {
-                cal.classList.add('open'); info.classList.remove('open'); renderCalendar(); header.classList.add('solid'); btns[1].classList.add('active');
+                cal.classList.add('open'); info.classList.remove('open'); renderCalendar(); header.classList.remove('collapsed'); header.classList.add('solid'); btns[1].classList.add('active'); document.getElementById('backBtn').classList.remove('visible');
             } else if (type === 'infos') {
-                info.classList.add('open'); cal.classList.remove('open'); header.classList.add('solid'); btns[2].classList.add('active');
+                info.classList.add('open'); cal.classList.remove('open'); header.classList.remove('collapsed'); header.classList.add('solid'); btns[2].classList.add('active'); document.getElementById('backBtn').classList.remove('visible');
             } else {
                 cal.classList.remove('open'); info.classList.remove('open'); header.classList.remove('solid'); btns[0].classList.add('active');
+                if(currentNodeID !== ROOT_ID) { header.classList.add('collapsed'); document.getElementById('backBtn').classList.add('visible'); }
             }
         }
 
         function resetToHome() { toggleOverlay(null); renderGalaxy(ROOT_ID); }
 
+        const MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
         function renderCalendar() {
             const container = document.getElementById('calendarContent');
             container.innerHTML = `<h2 class="font-cinzel text-lg text-[#cfaa65] tracking-widest text-center mb-6">Calendrier</h2>`;
-            const MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
             const allMembers = Object.values(database).filter(m => m.date && parseInt(m.date));
+            
             MONTHS.forEach(month => {
                 const members = allMembers.filter(m => m.date.toLowerCase().includes(month.toLowerCase()));
                 if(members.length === 0) return;
                 members.sort((a,b) => parseInt(a.date) - parseInt(b.date));
+                
                 const html = `<div class="mb-6"><div class="flex items-center gap-2 mb-3"><span class="text-[#cfaa65] font-cinzel text-xs tracking-widest">${month.toUpperCase()}</span><div class="h-px bg-[#cfaa65] flex-1 opacity-20"></div></div><div class="space-y-2">${members.map(m => {
-                    return `<div class="flex items-center justify-between p-2 rounded-lg bg-[#ffffff05] border border-[#cfaa65]/10" onclick="jumpToMember('${m.id}')"><div class="flex items-center gap-3"><div class="flex flex-col items-center justify-center w-8 h-8 rounded border border-[#cfaa65]/30 bg-[#cfaa65]/5"><span class="text-[10px] font-bold text-[#cfaa65] leading-none">${parseInt(m.date)}</span></div><div><div class="text-[13px] text-gray-200 font-serif tracking-wide">${m.name}</div></div></div><span class="text-[#cfaa65] opacity-40 text-[10px]">→</span></div>`;
+                    // --- CORRECTION LEGENDE ---
+                    let legend = "";
+                    if (m.isPartner && m.partnerId && database[m.partnerId]) {
+                        legend = `Conjoint(e) de ${database[m.partnerId].name.split(' ')[0]}`;
+                    } else if (m.parent && database[m.parent]) {
+                        legend = `Enfant de ${database[m.parent].name.split(' ')[0]}`;
+                    } else {
+                        legend = "Membre de la famille";
+                    }
+                    
+                    return `<div class="flex items-center justify-between p-2 rounded-lg bg-[#ffffff05] border border-[#cfaa65]/10" onclick="jumpToMember('${m.id}')"><div class="flex items-center gap-3"><div class="flex flex-col items-center justify-center w-8 h-8 rounded border border-[#cfaa65]/30 bg-[#cfaa65]/5"><span class="text-[10px] font-bold text-[#cfaa65] leading-none">${parseInt(m.date)}</span><span class="text-[5px] text-[#cfaa65] uppercase opacity-70 mt-0.5">${month.substring(0,3)}</span></div><div><div class="text-[13px] text-gray-200 font-serif tracking-wide">${m.name}</div><div class="text-[8px] text-gray-500 uppercase tracking-widest">${legend}</div></div></div><span class="text-[#cfaa65] opacity-40 text-[10px]">→</span></div>`;
                 }).join('')}</div></div>`;
                 container.innerHTML += html;
             });
         }
 
+        function checkBirthdays() {
+            const today = new Date();
+            const day = today.getDate();
+            const monthName = MONTHS[today.getMonth()];
+            
+            const matches = Object.values(database).filter(m => {
+                if(!m.date) return false;
+                return m.date.toLowerCase().includes(monthName.toLowerCase()) && parseInt(m.date) === day;
+            });
+
+            if (matches.length > 0) {
+                const names = matches.map(m => m.name.split(' ')[0]).join(', ');
+                document.getElementById('bdayMsg').innerHTML = `Joyeux Anniversaire à <b>${names}</b> aujourd'hui !`;
+                document.getElementById('birthdayPopup').classList.add('visible');
+                setTimeout(() => { document.getElementById('birthdayPopup').classList.remove('visible'); }, 6000);
+            }
+        }
+
+        function checkSpecificBirthday(d, m, name) {
+            const today = new Date();
+            if (parseInt(d) === today.getDate() && m === MONTHS[today.getMonth()]) {
+                document.getElementById('bdayMsg').innerHTML = `L'anniversaire de <b>${name}</b> est aujourd'hui !`;
+                document.getElementById('birthdayPopup').classList.add('visible');
+                setTimeout(() => { document.getElementById('birthdayPopup').classList.remove('visible'); }, 6000);
+            }
+        }
+
+        // --- CORRECTION NAVIGATION ---
         function jumpToMember(id) {
             toggleOverlay(null);
             const m = database[id];
-            let target = m.parent || ROOT_ID;
-            if (m.isPartner) target = m.partnerId; 
-            if (m.children && m.children.length > 0) target = m.id;
-            historyStack.push(ROOT_ID); fromCalendar = true; renderGalaxy(target);
+            
+            // Logique intelligente pour afficher le membre DANS sa connexion
+            let targetId = m.id;
+
+            if (m.isPartner && m.partnerId) {
+                // Si c'est un conjoint, on va sur le conjoint "Sang" pour les voir ensemble
+                targetId = m.partnerId; 
+            } else if ((!m.children || m.children.length === 0) && m.parent) {
+                // Si c'est un enfant sans enfants, on va sur le Parent pour le voir orbiter
+                targetId = m.parent;
+            }
+            // Sinon (C'est un parent avec des enfants), on reste sur lui (il devient le centre)
+
+            // Mise en historique pour le bouton retour
+            historyStack.push(ROOT_ID); 
+            fromCalendar = true; 
+            
+            renderGalaxy(targetId); 
         }
 
-        window.onload = () => { 
+        window.onload = async () => { 
+            // 1. Charge la base
+            await syncWithCloud();
+            // 2. Si déjà connecté, on entre
             const auth = localStorage.getItem('kipupu_auth_v5'); 
             if (auth && Date.now() < parseInt(auth)) enterApp(); 
         };
@@ -829,12 +1085,24 @@
         sInput.addEventListener('input', (e) => {
              const v = e.target.value.toLowerCase(); sRes.style.display = v.length > 1 ? 'block' : 'none'; sRes.innerHTML = '';
              if(v.length>1) {
-                 Object.values(database).filter(m => m.name.toLowerCase().includes(v)).forEach(m => {
-                     const div = document.createElement('div'); div.className = 'p-3 border-b border-[#cfaa65]/10 flex justify-between items-center cursor-pointer'; 
-                     div.innerHTML = `<div><div class="text-[11px] text-gray-200 font-serif tracking-wide">${m.name}</div></div>`;
+                 const matches = Object.values(database).filter(m => m.name && m.name.toLowerCase().includes(v));
+                 matches.forEach(m => {
+                     // --- CORRECTION LEGENDE RECHERCHE ---
+                     let legend = "";
+                     if (m.isPartner && m.partnerId && database[m.partnerId]) {
+                        legend = `Conjoint(e) de ${database[m.partnerId].name.split(' ')[0]}`;
+                     } else if (m.parent && database[m.parent]) {
+                        legend = `Enfant de ${database[m.parent].name.split(' ')[0]}`;
+                     } else {
+                        legend = "Membre";
+                     }
+
+                     const div = document.createElement('div'); div.className = 'p-3 border-b border-[#cfaa65]/10 flex justify-between items-center cursor-pointer hover:bg-[#ffffff05]'; 
+                     div.innerHTML = `<div><div class="text-[11px] text-gray-200 font-serif tracking-wide">${m.name}</div><div class="text-[8px] text-[#cfaa65] uppercase tracking-wide opacity-80">${legend}</div></div><span class="text-[#cfaa65] text-[10px]">→</span>`;
                      div.onclick = () => { jumpToMember(m.id); sRes.style.display='none'; sInput.value=''; }; sRes.appendChild(div);
                  });
              }
         });
     </script>
 </body>
+</html>
