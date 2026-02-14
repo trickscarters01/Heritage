@@ -908,13 +908,47 @@
 
         function openContactModal() { document.getElementById('contactModal').style.display = 'flex'; }
         
-        function sendMessage() {
+        async function sendMessage() {
             const name = document.getElementById('contactName').value;
             const lineage = document.getElementById('contactLineage').value;
             const msg = document.getElementById('contactMsg').value;
-            if(!name || !msg) { alert("Veuillez remplir votre nom et le message."); return; }
-            window.location.href = `mailto:contact@famillekipupu.com?subject=Message de ${name}&body=${lineage} : ${msg}`;
-            document.getElementById('contactModal').style.display = 'none';
+            const btn = document.querySelector('#contactModal button');
+
+            if(!name || !msg) { 
+                alert("Veuillez remplir votre nom et le message."); 
+                return; 
+            }
+
+            const originalText = btn.innerText;
+            btn.innerText = "ENVOI EN COURS...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch("https://formspree.io/f/mwvnolno", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        Nom: name,
+                        Lignee: lineage,
+                        Message: msg
+                    })
+                });
+
+                if (response.ok) {
+                    alert("Merci ! Votre message a été envoyé avec succès.");
+                    document.getElementById('contactModal').style.display = 'none';
+                    document.getElementById('contactName').value = "";
+                    document.getElementById('contactLineage').value = "";
+                    document.getElementById('contactMsg').value = "";
+                } else {
+                    alert("Oups ! Il y a eu un problème lors de l'envoi.");
+                }
+            } catch (error) {
+                alert("Erreur de connexion au serveur.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         }
 
         function populateSelects() {
