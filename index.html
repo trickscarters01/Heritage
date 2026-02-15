@@ -489,7 +489,8 @@
 
     <script>
         // CONFIGURATION STEIN API
-        const STEIN_URL = "https://api.steinhq.com/v1/storages/698caea7affba40a624c375c/Feuille1";
+        // Décodage de l'URL à la volée pour qu'elle ne soit pas en texte clair sur GitHub
+const STEIN_URL = atob("aHR0cHM6Ly9hcGkuc3RlaW5ocS5jb20vdjEvc3RvcmFnZXMvNjk4Y2FlYTdhZmZiYTQwYTYyNGMzNzVj") + "/Feuille1";
         const ROOT_ID = 'root'; // Doit correspondre à l'ID de la racine dans Google Sheets
 
         // Base de données de secours (Pour éviter l'écran blanc si API vide)
